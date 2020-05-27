@@ -1,0 +1,202 @@
+%% ****** Start of file apstemplate.tex ****** %
+%%
+%%
+%%   This file is part of the APS files in the REVTeX 4.2 distribution.
+%%   Version 4.2a of REVTeX, January, 2015
+%%
+%%
+%%   Copyright (c) 2015 The American Physical Society.
+%%
+%%   See the REVTeX 4 README file for restrictions and more information.
+%%
+%
+% This is a template for producing manuscripts for use with REVTEX 4.2
+% Copy this file to another name and then work on that file.
+% That way, you always have this original template file to use.
+%
+% Group addresses by affiliation; use superscriptaddress for long
+% author lists, or if there are many overlapping affiliations.
+% For Phys. Rev. appearance, change preprint to twocolumn.
+% Choose pra, prb, prc, prd, pre, prl, prstab, prstper, or rmp for journal
+%  Add 'draft' option to mark overfull boxes with black boxes
+%  Add 'showkeys' option to make keywords appear
+%\documentclass[twocolumn]{article}
+%\documentclass[aps,prl,preprint,groupedaddress]{revtex4-2}
+%\documentclass[aps,prl,preprint,superscriptaddress]{revtex4-2}
+\documentclass[aps,prl,reprint,superscriptaddress]{revtex4-2}
+
+% \usepackage[margin=1in]{geometry}
+
+\usepackage[T1]{fontenc}
+% Mathbb digits
+\usepackage{bbm}
+
+% You should use BibTeX and apsrev.bst for references
+% Choosing a journal automatically selects the correct APS
+% BibTeX style file (bst file), so only uncomment the line
+% below if necessary.
+\bibliographystyle{apsrev4-2}
+
+% Modify section headers
+\usepackage{titlesec}
+% Restore original section header (approximately)
+\titleformat{\section}[block]{\bfseries}{\thesection}{5pt}{\filcenter\MakeUppercase}{}
+\titlespacing*{\section}{0pt}{*4}{*2}
+% Make subsection headers bold, smallcaps, and inline
+\titleformat{\subsection}[runin]{\bfseries}{\thesubsection}{5pt}{\scshape}{}
+\titlespacing*{\subsection}{0pt}{*1}{*2}
+
+%\usepackage[toc,title,page]{appendix}
+
+\usepackage{graphicx}
+\graphicspath{{img/}}
+
+\usepackage{amssymb,amsmath,amsthm}
+
+% Ani macros
+\newcommand{\paren}[1]{\left(#1\right)}
+\newcommand{\brac}[1]{\left[#1\right]}
+\newcommand{\curly}[1]{\left\{#1\right\}}
+\newcommand{\mc}[1]{\mathcal{#1}}
+\newcommand{\braket}[2]{\langle #1|#2 \rangle}
+\newcommand{\cbra}[1]{(#1|}
+\newcommand{\cket}[1]{|#1)}
+\newcommand{\bracket}[2]{(#1|#2)}
+\newcommand{\suml}[3]{\sum_{#1}^{#2}#3}
+\newcommand{\prodl}[3]{\prod_{#1}^{#2}#3}
+\newcommand{\intl}[3]{\int_{#1}^{#2}#3}
+\newcommand{\pr}[0]{^\prime}
+\newcommand{\mb}[1]{\mathbf{#1}}
+\newcommand{\dg}[0]{^\dagger}
+\newcommand{\dd}[0]{\text{d}}
+\newcommand{\dv}[2][]{\frac{\text{d}#1}{\text{d}#2}}
+\newcommand{\pdv}[2][]{\frac{\partial#1}{\partial#2}}
+\newcommand{\mbb}[1]{\mathbbm{#1}}
+\newcommand{\str}[1]{\boldsymbol{\mathbf{#1}}}
+\newcommand{\prob}[0]{\text{Pr}}
+\newcommand{\wtil}[1]{\widetilde{#1}}
+\newcommand{\vac}[0]{\ket{\mathrm{vac}}}
+\newcommand{\swap}[0]{{\textsc{swap}}}
+\newcommand{\px}[1]{\sigma_{x}^{#1}}
+\newcommand{\py}[1]{\sigma_{y}^{#1}}
+\newcommand{\pz}[1]{\sigma_{z}^{#1}}
+\newcommand{\pplus}[1]{\sigma_{+}^{#1}}
+\newcommand{\pminus}[1]{\sigma_{-}^{#1}}
+\newcommand{\ha}[0]{\ensuremath{H}}
+\newcommand{\hj}[0]{\ensuremath{H_{J}}}
+\newcommand{\hh}[0]{\ensuremath{H_{h}}}
+\newcommand{\uti}[0]{\ensuremath{U}}
+\newcommand{\utd}[0]{\ensuremath{V}}
+\newcommand*{\tran}{^{\mkern-1.5mu\mathsf{T}}} % transpose
+\newcommand*{\idm}{\ensuremath{\mathbbm{1}}}
+\renewcommand{\vec}[1]{\ensuremath{\boldsymbol{#1}}}
+\newcommand{\cis}[0]{\ensuremath{\Pi}}
+
+% Math commands
+\usepackage{mathtools}
+\mathtoolsset{centercolon}
+\DeclareMathOperator{\poly}{poly}
+\DeclareMathOperator{\degree}{deg}
+\DeclareMathOperator{\dom}{dom}
+\DeclareMathOperator{\image}{image}
+\DeclareMathOperator{\id}{id}
+\DeclareMathOperator{\Sym}{Sym}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\hammingweight}{ham}
+\DeclareMathOperator{\rt}{rt}
+\DeclareMathOperator{\qrt}{qrt}
+\DeclareMathOperator{\urt}{urt}
+\DeclareMathOperator{\hqrt}{hqrt}
+\DeclareMathOperator{\rs}{rs}
+\DeclareMathOperator{\qrs}{qrs}
+\DeclareMathOperator{\twoqubitgate}{tg}
+\DeclareMathOperator{\diam}{diam}
+\DeclareMathOperator{\depth}{depth}
+\DeclareMathOperator{\vol}{vol}
+\DeclareMathOperator{\Ex}{\symbf{E}}
+\DeclareMathOperator{\Prob}{P}
+\DeclareMathOperator{\tr}{Tr}
+\DeclareMathOperator{\revfull}{R}
+\DeclareMathOperator{\entanglementOp}{E}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+% \DeclareMathOperator{\idm}{\symbf{1}}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+\DeclarePairedDelimiter\bra{\langle}{\vert}
+\DeclarePairedDelimiter\ket{\vert}{\rangle}
+\DeclarePairedDelimiter\set{\{}{\}}
+\DeclarePairedDelimiter\abs{\lvert}{\rvert}
+\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+\DeclarePairedDelimiterXPP\tg[1]{\twoqubitgate}{(}{)}{}{#1}
+\DeclarePairedDelimiterXPP\bigo[1]{O}{(}{)}{}{#1}
+\DeclarePairedDelimiterXPP\bigomega[1]{\Omega}{(}{)}{}{#1}
+\DeclarePairedDelimiterXPP\diagonal[1]{\diag}{(}{)}{}{#1}
+\DeclarePairedDelimiterXPP\hamming[1]{\hammingweight}{(}{)}{}{#1}
+\DeclarePairedDelimiterXPP\rnumber[1]{\rt}{(}{)}{}{#1}
+\DeclarePairedDelimiterXPP\qrnumber[1]{\qrt}{(}{)}{}{#1}
+\DeclarePairedDelimiterXPP\hrnumber[1]{\hqrt}{(}{)}{}{#1}
+\DeclarePairedDelimiterXPP\rsize[1]{\rs}{(}{)}{}{#1}
+\DeclarePairedDelimiterXPP\qrsize[1]{\qrs}{(}{)}{}{#1}
+\DeclarePairedDelimiterXPP\hierprod[2]{Π_{#1}}{(}{)}{}{#2}
+\DeclarePairedDelimiterXPP\modular[1]{M_G}{(}{)}{}{#1}
+\DeclarePairedDelimiterXPP\probability[1]{\Prob}{[}{]}{}{#1}
+\DeclarePairedDelimiterXPP\expectation[1]{\Ex}{[}{]}{}{#1}
+\DeclarePairedDelimiterXPP\entanglement[1]{\entanglementOp}{(}{)}{}{#1}
+\DeclarePairedDelimiterXPP\rev[1]{R}{[}{]}{}{#1}
+%\DeclarePairedDelimiterXPP\parstring[1]{Z}{[}{]}{}{#1}
+
+% Better tables
+\usepackage{booktabs}
+
+\usepackage[colorinlistoftodos]{todonotes}
+\newcommand{\todoi}[2][]{\todo[inline,#1]{#2}} %Macro for todo inline
+
+%Link colors
+\usepackage{color}
+\usepackage{xcolor}
+\definecolor{dark-red}{rgb}{0.4,0.15,0.15}
+\definecolor{dark-blue}{rgb}{0.15,0.15,0.4}
+\definecolor{medium-blue}{rgb}{0,0,0.5}
+
+\definecolor{mycomment}{rgb}{0.3,0.7,0.8}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{lightgray}{rgb}{0.95,0.95,0.95}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+
+\usepackage{hyperref}
+\hypersetup{%
+	breaklinks=true,
+	% bookmarks=true,
+	colorlinks,
+	linkcolor={dark-blue},
+	citecolor={dark-blue},
+	urlcolor={medium-blue},
+	pdfauthor = {Aniruddha Bapat},
+	pdftitle ={Simulating the Schwinger model via matrix product states},
+	pdfpagemode=UseOutlines,
+	pdfborder={0 0 0}
+}
+
+% References, load last.
+\usepackage[nameinlink,capitalise]{cleveref}
+\crefname{figure}{Figure}{Figures}
+\crefname{equation}{}{} % Do not print "Eq."
+\Crefname{equation}{Equation}{Equations}
+
+% Theorems, load after cleveref.
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{definition}
+\newtheorem{protocol}[theorem]{Protocol}
+\crefname{protocol}{Protocol}{Protocols}
+
+
+% User comments coded by color
+\newcommand{\ani}[2]{\textcolor{cyan}{\emph{#1}[Ani: #2]}}
+
+\begin{document}
+\end{document}
