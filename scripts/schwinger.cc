@@ -76,7 +76,7 @@ int main(int argc, char* argv[]){
 
   auto sweeps = Sweeps(5);
   sweeps.noise() = 1E-6,1E-8,1E-12,0;
-  sweeps.maxdim() = 10,20,50,100,200;
+  sweeps.maxdim() = 10,50,100,300,600;
   sweeps.cutoff() = 1E-10;
 
 
