@@ -92,18 +92,19 @@ int main(int argc, char* argv[]){
   auto [energy,psi0] = dmrg(H, psiInit0, sweeps, {"Quiet=",true});
   printfln("Ground State Energy = %.12f",energy/(2*N*x));
 
+  // // Schmidt spectrum at half-cut
+  // auto b = N/2;
+  // psi0.position(b); 
+  // auto r = leftLinkIndex(psi0,b);
+  // auto t = siteIndex(psi0,b);
+  // auto [U,S,V] = svd(psi0(b),{r,t});
+  // auto u = commonIndex(U,S);
+  // for(auto n : range1(dim(u)))
+  //   {
+  //     printfln("%.12f", elt(S,n,n));
+  //   }
   
-  auto b = N/2;
-  psi0.position(b); 
-  auto r = leftLinkIndex(psi0,b);
-  auto t = siteIndex(psi0,b);
-  auto [U,S,V] = svd(psi0(b),{r,t});
-  auto u = commonIndex(U,S);
-  for(auto n : range1(dim(u)))
-    {
-      printfln("%.12f", elt(S,n,n));
-    }
-
+  // Gauss Law
   for(int j=2; j <= 2*N; j+=2)
     {
       // Site-dependent variables
