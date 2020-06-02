@@ -257,11 +257,11 @@ The massive Schwinger model describes 1+1D QED with one flavor of fermionic part
 Under a Jordan-Wigner transformation, the Hamiltonian on $N$ matter sites (with open boundary conditions) takes on the form
 \begin{equation}
   \label{eq:schwingerH}
-  H = \frac{g}{2\sqrt{x}}\paren{\suml{i=1}{N}{E_{2i}^2} + \frac{\mu}{2}\suml{i=1}{N}{\frac{1 + (-1)^i\pz{2i-1}}{2}} + x\suml{i=1}{N-1}{\paren{\pplus{2i-1} U_{2i} \pminus{2i+1} +\mathrm{ h.c.}}}}\, ,
+  H = \frac{g}{2\sqrt{x}}\paren{\suml{i=1}{N}{E_{2i}^2} + \mu\suml{i=1}{N}{\frac{1 + (-1)^i\pz{2i-1}}{2}} + x\suml{i=1}{N-1}{\paren{\pplus{2i-1} U_{2i} \pminus{2i+1} +\mathrm{ h.c.}}}}\, ,
 \end{equation}
 where we introduced dimensionless quantities $x \coloneqq \frac{1}{g^2a^2}$ and $\mu\coloneqq \frac{2m}{g^2a}$ (in units of  $\hbar = c = 1$). In the above equation, $E_{2i}$ is the electric field at link $2i$, and $U_{2i}$ is the canonically conjugate unitary to $E_{2i}$ that satisfies $[U_{2i}, E_{2i}] = U_{2i}$. To simplify notation, we define the number operator for each matter site as $n_{2i-1}\coloneqq \frac{1 + (-1)^i\pz{2i-1}}{2}$. Extrapolating the theory to continuum is carried out in two steps. The bulk limit involves sending number of sites $N\rightarrow\infty$. Next, the continuum limit corresponds to a vanishing lattice spacing, or $x\rightarrow \infty$. In order to avoid a singularity, the limits must be carried out in the order prescribed, first $N$ and then $x$~\cite{byrnes2003, hamer1982}. 
 
-Due to the lack of the temporal gauge term, the physical Hilbert space is specified by imposing an additional local gauge symmetry, namely, Gauss' law:
+Due to temporal gauge fixing, the physical Hilbert space is specified by imposing an additional local gauge symmetry, namely, Gauss' law:
 \begin{equation}
   \label{eq:gaussLaw}
   G_i \coloneqq E_{2i+2} - E_{2i} - (-1)^in_i\, .

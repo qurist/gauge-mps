@@ -74,10 +74,11 @@ int main(int argc, char* argv[]){
   
   auto H = toMPO(ampo);
 
-  auto sweeps = Sweeps(5);
-  sweeps.noise() = 1E-6,1E-8,1E-12,0;
-  sweeps.maxdim() = 10,50,100,300,600;
+  auto sweeps     = Sweeps(12);
+  sweeps.noise()  = 1E-6,1E-8,1E-10, 1E-10, 1E-10, 1E-12, 1E-12, 1E-12, 1E-12, 0, 0 , 0;
+  sweeps.maxdim() = 10,20,40,40,80,80,160,160,320,320,640,640;
   sweeps.cutoff() = 1E-10;
+  double dE       = 1E-6;
 
 
   auto state = InitState(sites);
@@ -89,7 +90,7 @@ int main(int argc, char* argv[]){
     }
   auto psiInit0 = MPS(state);
 
-  auto [energy,psi0] = dmrg(H, psiInit0, sweeps, {"Quiet=",true});
+  auto [energy,psi0] = dmrg(H, psiInit0, sweeps, {"Quiet=",true, "EnergyErrgoal=",1E-6});
   printfln("Ground State Energy = %.12f",energy/(2*N*x));
 
   // // Schmidt spectrum at half-cut
