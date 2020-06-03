@@ -3,7 +3,7 @@
 
 # 2. Edit LIBRARY_DIR to point at the location of your ITensor Library
 #    source folder (this is the folder that has options.mk in it)
-LIBRARY_DIR=$(HOME)/.local/itensor
+LIBRARY_DIR=$(HOME)/Documents/itensor
 
 # 3. If your 'main' function is in a file called 'myappname.cc', then
 #    set APP to 'myappname'. Running 'make' will compile the app.
@@ -33,14 +33,13 @@ TENSOR_HEADERS=$(LIBRARY_DIR)/itensor/core.h
 #Mappings --------------
 OBJECTS=$(patsubst %.cc,%.o, $(CCFILES))
 GOBJECTS=$(patsubst %,.debug_objs/%, $(OBJECTS))
-
 #Rules ------------------
 
 %.o: %.cc $(HEADERS) $(TENSOR_HEADERS)
 	$(CCCOM) -c $(CCFLAGS) -o $@ $<
 
 .debug_objs/%.o: %.cc $(HEADERS) $(TENSOR_HEADERS)
-	$(CCCOM) -c $(CCGFLAGS) -o $@ $<
+	$(CCCOM) -c $(CCGFLAGS)  -o $@ $<
 
 #Targets -----------------
 

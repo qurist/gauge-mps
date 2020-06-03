@@ -1,0 +1,9 @@
+input {
+Nmin=300
+Nmax=300
+xmin=1000
+xmax=1000
+mg=0
+NE=2
+gauss=1
+}
