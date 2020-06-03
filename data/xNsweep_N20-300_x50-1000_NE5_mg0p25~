@@ -1,0 +1,11 @@
+input {
+Nmin = 20
+Nmax = 40
+dN   = 20
+xmin = 20
+xmax = 40
+dx   = 10
+NE   = 3
+mg   = 0.25
+mu   = 5
+}

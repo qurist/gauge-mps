@@ -301,7 +301,9 @@ We study the effect of electric field truncation on the ground state energy.
 
 \section{Continuum limit}
 
-The continuum limit corresponds to taking $N,x\rightarrow\infty$ while keeping the other model parameters fixed. Following \cite{hamer1982}, the two limits are taken sequentially, first in the number of lattice sites $N$ for fixed $x$, and then in $x$. We will study set the scaling of the ground state energy obtained from ground-state DMRG varying $N,x$ in some finite range, and then extrapolate to infinity. The electric field cutoff
+The continuum limit corresponds to taking $N,x\rightarrow\infty$ while keeping the other model parameters fixed. Following \cite{hamer1982}, the two limits are taken sequentially, first in the number of lattice sites $N$ for fixed $x$, and then in $x$. We will study the scaling of the ground state energy obtained from ground-state DMRG by varying $N,x$ in a finite range, and then extrapolating to infinity. We will set the electric field cutoff to $\epsilon_\max=5$, and the mass to coupling ratio to $m/g=0.25$. Note that $\mu = 2\sqrt{x}m/g$ varies with $x$.
+
+The bond dimension is harder to set a priori but can be determined for each run based on the convergence. We will keep a sweep schedule of $D = {10,20,40,40,80,80,160,160,320,320,640,640}$ with the option to terminate if the energy difference between successive sweeps is $dE < 10^{-6}$. This is 
 
 \begin{acknowledgments}
 Calculations were performed using the ITensor Library~\cite{itensor}.
