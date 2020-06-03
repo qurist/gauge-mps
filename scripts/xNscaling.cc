@@ -15,6 +15,7 @@ int main(int argc, char* argv[]) {
   auto dx   = input.getReal("dx", 50);
   auto NE = input.getInt("NE", 5);
   auto mg = input.getReal("mg",0.25);
+  auto gauss = input.getInt("gauss", 0);
 
   int N;
   double x;
@@ -23,7 +24,7 @@ int main(int argc, char* argv[]) {
   for (N = Nmin; N <= Nmax; N+=dN) {
     for (x = xmin; x <= xmax; x+=dx) {
       runfile = std::fopen(fpath, "w");
-      std::fprintf(runfile, "input\n{\nN=%d\nx=%.12f\nNE=%d\nmg=%.12f\n}", N, x, NE, mg);
+      std::fprintf(runfile, "input\n{\nN=%d\nx=%.12f\nNE=%d\nmg=%.12f\ngauss=%i\n}", N, x, NE, mg, gauss);
       std::fclose(runfile);
       
       schwinger(fpath);

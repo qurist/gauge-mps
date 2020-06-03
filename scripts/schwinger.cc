@@ -82,7 +82,7 @@ int schwinger(const char *inputfile, Args const& args = Args::global()){
   sweeps.noise()  = 1E-6,1E-8,1E-10,1E-10,1E-10,1E-12,1E-12,1E-12,1E-12,0,0,0;
   sweeps.maxdim() = 10,20,40,40,80,80,160,160,320,320,640,640;
   sweeps.cutoff() = 1E-10;
-  double dE       = 1E-6;
+  double dE       = 1E-4;
 
 
   auto state = InitState(sites);
@@ -95,21 +95,23 @@ int schwinger(const char *inputfile, Args const& args = Args::global()){
   auto psiInit0 = MPS(state);
 
   auto [energy,psi0] = dmrg(H, psiInit0, sweeps, {"Quiet=",true, "EnergyErrgoal=",1E-6});
-  printfln("E(N,x) N x NE mu = %.12f %d %.12f %d %.12f\n",energy/(2*N*x), N, x, NE, mu);
+  printfln("E(N,x) N x NE mu = %.12f %d %.12f %d %.12f\n", energy/(2*N*x), N, x, NE, mu);
 
-  // // Schmidt spectrum at half-cut
-  // auto b = N/2;
-  // psi0.position(b); 
-  // auto r = leftLinkIndex(psi0,b);
-  // auto t = siteIndex(psi0,b);
-  // auto [U,S,V] = svd(psi0(b),{r,t});
-  // auto u = commonIndex(U,S);
-  // for(auto n : range1(dim(u)))
-  //   {
-  //     printfln("%.12f", elt(S,n,n));
-  //   }
+  // Schmidt spectrum at half-cut
+  auto b = N/2;
+  psi0.position(b); 
+  auto r = leftLinkIndex(psi0,b);
+  auto t = siteIndex(psi0,b);
+  auto [U,S,V] = svd(psi0(b),{r,t});
+  auto u = commonIndex(U,S);
+  printfln("Shmidt coefficients:");
+  for(auto n : range1(dim(u)))
+    {
+      printfln("%.12f", elt(S,n,n));
+    }
   
   // Gauss Law
+  printfln("Observables\n site# Gi var-Gi Ei var-Ei ni var-ni");
   if (gauss) {
     for(int j=2; j <= 2*N; j+=2)
       {
@@ -150,14 +152,21 @@ int schwinger(const char *inputfile, Args const& args = Args::global()){
         ampo += NE*NE,"Id",j-1;
         ampo += -2*NE,"N",j-1;
         auto Efield2 = toMPO(ampo);
+
+        // Number operators
+        ampo = AutoMPO(sites);
+        ampo += 1,s,j;
+        auto nferm = toMPO(ampo);
         
         //auto bondket = psi(j-1)*psi(j)*psi(j+1);
-        Real gauge0 = inner(psiInit0,Gi,psiInit0);
+        //Real gauge0 = inner(psiInit0,Gi,psiInit0);
         Real gauge = inner(psi0, Gi, psi0);
         Real gaugevar =  inner(psi0, Gi2, psi0)-gauge*gauge;
-        Real E =  inner(psi0, Efield, psi0);
-        Real E2 =  inner(psi0, Efield2, psi0)-E*E;
-        printfln("%d %.12f %.12f %0.12f %0.12f %0.12f",j,gauge0, gauge, gaugevar, E, E2);
+        Real E   =  inner(psi0, Efield, psi0);
+        Real E2  = inner(psi0, Efield2, psi0)-E*E;
+	Real nf  = inner(psi0, nferm, psi0);
+	Real nf2 = nf - nf*nf;
+        printfln("%d %.12f %0.12f %0.12f %0.12f %.12f %.12f",j, gauge, gaugevar, E, E2, nf, nf2);
       }
   }
   return 0;
