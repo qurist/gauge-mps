@@ -18,17 +18,21 @@ using Schwinger = MixedSiteSet<LadderSite, SpinHalfSite>;
 // }
 
 
-int main(int argc, char* argv[]){
-  if(argc < 2) 
-    { 
-    printfln("Usage: %s inputfile",argv[0]); 
-    return 0; 
-    }
-  auto input = InputGroup(argv[1],"input");
+//int main(int argc, char* argv[]){
+int schwinger(const char *inputfile, Args const& args = Args::global()){
+  // if(argc < 2) 
+  //   { 
+  //   printfln("Usage: %s inputfile",argv[0]); 
+  //   return 0; 
+  //   }
+  //auto inputfile = args.getString("input=");
+  auto input = InputGroup(inputfile,"input");
   auto N = input.getInt("N", 30);
   auto NE = input.getInt("NE", 5);
   auto x  = input.getReal("x", 100);
-  auto mu = input.getReal("mu", 5);
+  auto mg = input.getReal("mg", 0.25);
+  auto mu = 2*sqrt(x)*mg;
+  auto gauss = input.getInt("gauss",0);
 
   auto sites = Schwinger(2*N+1, {"ConserveSz=",true, "ConserveNb=", false, "MaxOcc=",2*NE});//SiteSet(N,4*NE+2);
   auto ampo = AutoMPO(sites);
@@ -75,7 +79,7 @@ int main(int argc, char* argv[]){
   auto H = toMPO(ampo);
 
   auto sweeps     = Sweeps(12);
-  sweeps.noise()  = 1E-6,1E-8,1E-10, 1E-10, 1E-10, 1E-12, 1E-12, 1E-12, 1E-12, 0, 0 , 0;
+  sweeps.noise()  = 1E-6,1E-8,1E-10,1E-10,1E-10,1E-12,1E-12,1E-12,1E-12,0,0,0;
   sweeps.maxdim() = 10,20,40,40,80,80,160,160,320,320,640,640;
   sweeps.cutoff() = 1E-10;
   double dE       = 1E-6;
@@ -91,7 +95,7 @@ int main(int argc, char* argv[]){
   auto psiInit0 = MPS(state);
 
   auto [energy,psi0] = dmrg(H, psiInit0, sweeps, {"Quiet=",true, "EnergyErrgoal=",1E-6});
-  printfln("Ground State Energy = %.12f",energy/(2*N*x));
+  printfln("E(N,x) N x NE mu = %.12f %d %.12f %d %.12f\n",energy/(2*N*x), N, x, NE, mu);
 
   // // Schmidt spectrum at half-cut
   // auto b = N/2;
@@ -106,53 +110,67 @@ int main(int argc, char* argv[]){
   //   }
   
   // Gauss Law
-  for(int j=2; j <= 2*N; j+=2)
-    {
-      // Site-dependent variables
-      if (j%4==2) {
-	s = "projUp";
-	sign = -1;
+  if (gauss) {
+    for(int j=2; j <= 2*N; j+=2)
+      {
+        // Site-dependent variables
+        if (j%4==2) {
+  	s = "projUp";
+  	sign = -1;
+        }
+        else if (j%4==0) {
+  	s = "projDn";
+  	sign = 1;
+        }
+        // Construct Gauge operator G_i
+        ampo = AutoMPO(sites);
+        ampo += -1,"N",j-1;
+        ampo += 1,"N",j+1;
+        //ampo += -2*NE,"Id",j+1;
+        ampo += sign, s,j; 
+        auto Gi = toMPO(ampo);
+        
+        // Construct Gauge-squared G_i^2
+        ampo = AutoMPO(sites); 
+        ampo += 1,"N",j-1, "N",j-1;
+        ampo += 1,"N",j+1, "N",j+1;
+        ampo += -2,"N",j-1, "N",j+1;      
+        ampo += 1, s,j;
+        ampo += 2*sign, s, j, "N",j+1;
+        ampo += -2*sign, s, j, "N", j-1;
+        auto Gi2 = toMPO(ampo);
+        
+        // Field operators
+        ampo = AutoMPO(sites);
+        ampo += 1,"N",j-1;
+        ampo += -1*NE, "Id", j-1;
+        auto Efield = toMPO(ampo);
+        ampo = AutoMPO(sites);
+        ampo += 1,"N",j-1,"N",j-1;
+        ampo += NE*NE,"Id",j-1;
+        ampo += -2*NE,"N",j-1;
+        auto Efield2 = toMPO(ampo);
+        
+        //auto bondket = psi(j-1)*psi(j)*psi(j+1);
+        Real gauge0 = inner(psiInit0,Gi,psiInit0);
+        Real gauge = inner(psi0, Gi, psi0);
+        Real gaugevar =  inner(psi0, Gi2, psi0)-gauge*gauge;
+        Real E =  inner(psi0, Efield, psi0);
+        Real E2 =  inner(psi0, Efield2, psi0)-E*E;
+        printfln("%d %.12f %.12f %0.12f %0.12f %0.12f",j,gauge0, gauge, gaugevar, E, E2);
       }
-      else if (j%4==0) {
-	s = "projDn";
-	sign = 1;
-      }
-      // Construct Gauge operator G_i
-      ampo = AutoMPO(sites);
-      ampo += -1,"N",j-1;
-      ampo += 1,"N",j+1;
-      //ampo += -2*NE,"Id",j+1;
-      ampo += sign, s,j; 
-      auto Gi = toMPO(ampo);
-      
-      // Construct Gauge-squared G_i^2
-      ampo = AutoMPO(sites); 
-      ampo += 1,"N",j-1, "N",j-1;
-      ampo += 1,"N",j+1, "N",j+1;
-      ampo += -2,"N",j-1, "N",j+1;      
-      ampo += 1, s,j;
-      ampo += 2*sign, s, j, "N",j+1;
-      ampo += -2*sign, s, j, "N", j-1;
-      auto Gi2 = toMPO(ampo);
-      
-      // Field operators
-      ampo = AutoMPO(sites);
-      ampo += 1,"N",j-1;
-      ampo += -1*NE, "Id", j-1;
-      auto Efield = toMPO(ampo);
-      ampo = AutoMPO(sites);
-      ampo += 1,"N",j-1,"N",j-1;
-      ampo += NE*NE,"Id",j-1;
-      ampo += -2*NE,"N",j-1;
-      auto Efield2 = toMPO(ampo);
-      
-      //auto bondket = psi(j-1)*psi(j)*psi(j+1);
-      Real gauge0 = inner(psiInit0,Gi,psiInit0);
-      Real gauge = inner(psi0, Gi, psi0);
-      Real gaugevar =  inner(psi0, Gi2, psi0)-gauge*gauge;
-      Real E =  inner(psi0, Efield, psi0);
-      Real E2 =  inner(psi0, Efield2, psi0)-E*E;
-      printfln("%d %.12f %.12f %0.12f %0.12f %0.12f",j,gauge0, gauge, gaugevar, E, E2);
-    }
+  }
   return 0;
 }
+
+// int main(int argc, char* argv[]) {
+//   if(argc < 2) 
+//     { 
+//     printfln("Usage: %s inputfile",argv[0]); 
+//     return 0; 
+//     }
+//   schwinger(argv[1]);
+//   return 0;
+// }
+
+
