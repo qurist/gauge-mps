@@ -3,13 +3,13 @@
 
 # 2. Edit LIBRARY_DIR to point at the location of your ITensor Library
 #    source folder (this is the folder that has options.mk in it)
-LIBRARY_DIR=$(HOME)/Documents/itensor
+LIBRARY_DIR=$(HOME)/.local/itensor
 
 # 3. If your 'main' function is in a file called 'myappname.cc', then
 #    set APP to 'myappname'. Running 'make' will compile the app.
 #    Running 'make debug' will make a program called 'myappname-g'
 #    which includes debugging symbols and can be used in gdb (Gnu debugger);
-APP=xNscaling
+APP=paramsweep
 
 # 4. Add any headers your program depends on here. The make program
 #    will auto-detect if these headers have changed and recompile your app.
