@@ -1,0 +1,16 @@
+This directory contains input and output files on the experiment studying the accuracy of the DMRG ground state energy as a function
+of electric field cutoff, over a range of parameter settings.
+
+We vary:
+- NE in {1,2,3,5,7}
+- mg in {0,1,10}
+- x in {10,200,1000}
+- N in {30,100,300}
+
+The input files specify the above parameter settings (one input file for each setting).
+The output files are logs containing a lot of information, including the energy after every sweep,
+bond dimension, etc., as well as the schmidt values at half-cut, and measurements of site observables such
+as gauss' law, electric field, fermion number, and their respective variance. Note that gauss' law (and its variance)
+must be zero at every site, which serves as a physics check.
+
+I also collect the output into more readable data files (with extension .dat).

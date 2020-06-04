@@ -1,0 +1,4 @@
+This directory contains input and output files on the experiment studying the convergence of the ground-state energy of
+a Schwinger model in the lattice size N and the lattice spacing parameter x = 1/(ga)^2. The energy is produced via ground-state
+DMRG, and the other parameters: Field cutoff "NE", mass in g units "mg" (= m/g). The bond dimension is set by a convergence criterion
+that checks if the difference in energies of successive sweeps is less than a fixed threshold (usually 1e-4). 
