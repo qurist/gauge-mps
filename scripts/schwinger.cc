@@ -94,7 +94,7 @@ int schwinger(const char *inputfile, Args const& args = Args::global()){
     }
   auto psiInit0 = MPS(state);
 
-  auto [energy,psi0] = dmrg(H, psiInit0, sweeps, {"Quiet=",true, "EnergyErrgoal=",1E-6});
+  auto [energy,psi0] = dmrg(H, psiInit0, sweeps, {"Quiet=",true, "EnergyErrgoal=",dE});
   printfln("E(N,x) N x NE mu = %.12f %d %.12f %d %.12f\n", energy/(2*N*x), N, x, NE, mu);
 
   // Schmidt spectrum at half-cut
