@@ -16,6 +16,8 @@ int main(int argc, char* argv[]) {
   auto NE = input.getInt("NE", 5);
   auto mg = input.getReal("mg",0.25);
   auto gauss = input.getInt("gauss", 0);
+  auto Q     = input.getInt("Q",0);
+  auto q     = input.getInt("q",1);
 
   int N;
   double x;
@@ -24,7 +26,7 @@ int main(int argc, char* argv[]) {
   for (N = Nmin; N <= Nmax; N+=dN) {
     for (x = xmin; x <= xmax; x+=dx) {
       runfile = std::fopen(fpath, "w");
-      std::fprintf(runfile, "input\n{\nN=%d\nx=%.12f\nNE=%d\nmg=%.12f\ngauss=%i\n}", N, x, NE, mg, gauss);
+      std::fprintf(runfile, "input\n{\nN=%d\nx=%.12f\nNE=%d\nmg=%.12f\ngauss=%i\nQ=%d\nq=%d\n}", N, x, NE, mg, gauss, Q, q);
       std::fclose(runfile);
       
       schwinger(fpath);

@@ -33,6 +33,8 @@ int schwinger(const char *inputfile, Args const& args = Args::global()){
   auto mg = input.getReal("mg", 0.25);
   auto mu = 2*sqrt(x)*mg;
   auto gauss = input.getInt("gauss",0);
+  auto Q     = input.getInt("Q",0);
+  auto q     = input.getInt("q",1);
 
   auto sites = Schwinger(2*N+1, {"ConserveSz=",true, "ConserveNb=", false, "MaxOcc=",2*NE});//SiteSet(N,4*NE+2);
   auto ampo = AutoMPO(sites);
@@ -86,12 +88,37 @@ int schwinger(const char *inputfile, Args const& args = Args::global()){
 
 
   auto state = InitState(sites);
+  // for(auto j : range1(2*N+1))
+  //   {
+  //     if(j%4==2) state.set(j,"Up");
+  //     else if(j%4==0) state.set(j,"Dn");
+  //     else state.set(j,str(NE));
+  //   }
+
+ 
   for(auto j : range1(2*N+1))
     {
-      if(j%4==2) state.set(j,"Up");
-      else if(j%4==0) state.set(j,"Dn");
-      else state.set(j,str(NE));
+      // First Q (anti-)particles flipped
+      if(j<= 4*Q)
+	{
+	  // Field increases to preserves Gauss' law
+	  if(j%2==1) state.set(j,str(NE + q*((j+q)/4)));
+	  // Matter sites
+	  else{
+	    if (q==1) state.set(j,"Up");
+	    else state.set(j,"Dn");
+	  }
+	}
+      
+      // Strong-coupling vacuum on remaining lattice
+      else
+	{
+	  if(j%4==2) state.set(j,"Dn");
+	  else if(j%4==0) state.set(j,"Up");
+	  else state.set(j,str(NE + q*Q));
+	}
     }
+
   auto psiInit0 = MPS(state);
 
   auto [energy,psi0] = dmrg(H, psiInit0, sweeps, {"Quiet=",true, "EnergyErrgoal=", dE});
