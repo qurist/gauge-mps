@@ -1,0 +1,13 @@
+input {
+Nmin = 100
+Nmax = 100
+dN   = 200
+xmin = 400
+xmax = 400
+dx   = 50
+NE   = 3
+mg   = 0.3
+gauss= 1
+Q    = 2
+q    = 1
+}
