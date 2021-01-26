@@ -81,6 +81,9 @@ int schwinger(const char *inputfile, Args const& args = Args::global()){
     }
   
   auto H = toMPO(ampo);
+  // If you wanted to multiply MPOs. Addition is with sum(H1,H2).
+  //  auto H2 = nmultMPO(H,prime(H), {"Cutoff", 1e-8});
+  //  H2.mapPrime(2,1);
 
   auto sweeps     = Sweeps(12);
   sweeps.noise()  = 1E-6,1E-8,1E-10,1E-10,1E-10,1E-12,1E-12,1E-12,1E-12,0,0,0;
