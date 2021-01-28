@@ -8,9 +8,9 @@ da   = 0.1
 mmin = 1
 mmax = 1
 dm   = 1
-gmin = 0
-gmax = 0
+gmin = 1
+gmax = 1
 dg   = 1
-nstates = 40
+nstates = 36
 weight  = 100
 }

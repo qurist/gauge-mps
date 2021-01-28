@@ -80,8 +80,8 @@ ti = time()
 
 # ------- FERMION BASIS ------------------------------------------------------#
 # Basis: use internal fermion basis of quspin
-#fermion_basis = spinful_fermion_basis_1d(L=N,Nf=(N//2,N//2))
-fermion_basis = spinful_fermion_basis_1d(L=N,Nf=(1,0))
+fermion_basis = spinful_fermion_basis_1d(L=N,Nf=(N//2,N//2))
+#fermion_basis = spinful_fermion_basis_1d(L=N,Nf=(1,0))
 
 print("# Number of states (half filling), OBC ", fermion_basis.Ns)
 print("# TIME: building Fermion basis took {0:.4f} sec".format(time()-ti))

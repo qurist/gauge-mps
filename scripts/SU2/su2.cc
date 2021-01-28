@@ -16,44 +16,44 @@ int su2(const char *inputfile, Args const& args = Args::global()){
   Real t2 = 1;
   Real t3 = 1;
 
-  auto sites = Fermion(2*N, {"ConserveQNs=",True});
+  auto sites = Electron(N, {"ConserveQNs=",true, "ConserveSz",true});
   auto ampo = AutoMPO(sites);
 
-  // 1d lattice with 2N sites (i.e. N staggered sites, N/2 physical sites), labeled 1,...,2N.
-  // Assign component 1 of staggered site spinor to odd sites, component 2 to even sites.
+  // 1d lattice with N spinful sites (i.e. N staggered sites, N/2 physical sites), labeled 1,...,N.
+
   // Interaction term H_I
-  for(int j=0; j < N-1; j+=1)
+  for(int j=1; j < N; j+=1)
     {
-      ampo += t1*0.5/a, "Cdag", 2*j+1, "C", 2*j+3;
-      ampo += t1*0.5/a, "Cdag", 2*j+3, "C", 2*j+1;
-      ampo += t1*0.5/a, "Cdag", 2*j+2, "C", 2*j+4;
-      ampo += t1*0.5/a, "Cdag", 2*j+4, "C", 2*j+2;
+      ampo += t1*0.5/a, "Cdagup", j, "Cup", j+1;
+      ampo += t1*0.5/a, "Cdagup", j+1, "Cup", j;
+      ampo += t1*0.5/a, "Cdagdn", j, "Cdn", j+1;
+      ampo += t1*0.5/a, "Cdagdn", j+1, "Cdn", j;
     }
 
   // Matter term H_M
-  for(int j=0; j < N; j+=1)
+  for(int j=1; j < N+1; j+=1)
     {
-      ampo += t2*m*(1-2*(j%2)), "Cdag", 2*j+1, "C", 2*j+1;
-      ampo += t2*m*(1-2*(j%2)), "Cdag", 2*j+2, "C", 2*j+2;
+      ampo += t2*m*(2*(j%2)-1), "Cdagup", j, "Cup", j;
+      ampo += t2*m*(2*(j%2)-1), "Cdagdn", j, "Cdn", j;
     }
 
   // Field term H_E
-  for(int j=0; j < N; j+=1)
+  for(int j=1; j < N+1; j+=1)
     {
-    for(int k=j; k < N; k+=1) 
+    for(int k=j; k < N+1; k+=1) 
       {
-	ampo += -t3*g*g*a/8*(k-j), "Cdag", 2*j+1, "C", 2*j+1, "Cdag", 2*k+1, "C", 2*k+1;
-	ampo += -t3*g*g*a/8*(j-k), "Cdag", 2*j+1, "C", 2*j+1, "Cdag", 2*k+2, "C", 2*k+2;
-	ampo += -t3*g*g*a/8*(j-k), "Cdag", 2*j+2, "C", 2*j+2, "Cdag", 2*k+1, "C", 2*k+1;
-	ampo += -t3*g*g*a/8*(k-j), "Cdag", 2*j+2, "C", 2*j+2, "Cdag", 2*k+2, "C", 2*k+2;
-	ampo += -t3*g*g*a/4*(k-j), "Cdag", 2*j+1, "C", 2*j+2, "Cdag", 2*k+2, "C", 2*k+1;
-	ampo += -t3*g*g*a/4*(k-j), "Cdag", 2*j+2, "C", 2*j+1, "Cdag", 2*k+2, "C", 2*k+1;
+	ampo += -t3*g*g*a/8*(k-j), "Cdagup", j, "Cup", j, "Cdagup", k, "Cup", k;
+	ampo += -t3*g*g*a/8*(j-k), "Cdagup", j, "Cup", j, "Cdagdn", k, "Cdn", k;
+	ampo += -t3*g*g*a/8*(j-k), "Cdagdn", j, "Cdn", j, "Cdagup", k, "Cup", k;
+	ampo += -t3*g*g*a/8*(k-j), "Cdagdn", j, "Cdn", j, "Cdagdn", k, "Cdn", k;
+	ampo += -t3*g*g*a/4*(k-j), "Cdagup", j, "Cdn", j, "Cdagdn", k, "Cup", k;
+	ampo += -t3*g*g*a/4*(k-j), "Cdagdn", j, "Cup", j, "Cdagup", k, "Cdn", k;
       }
     }
   
   auto H = toMPO(ampo);
 
-  auto sweeps     = Sweeps(10);
+  auto sweeps     = Sweeps(15);
   sweeps.noise()  = 1E-6,1E-8,1E-10,1E-10,1E-10,1E-12,0,0,0,0,0,0;
   sweeps.niter() = 2;
   sweeps.maxdim() = 10,20,40,40,80,80,160,160,320,320,640,640,640,640,640;
@@ -62,26 +62,18 @@ int su2(const char *inputfile, Args const& args = Args::global()){
 
 
   auto state = InitState(sites);
-  for(int j=0; j < N; j++)
+  for(int j=1; j < N+1; j++)
     {
       if(j%2)
 	{
-	  state.set(2*j+1,"Emp");
-	  state.set(2*j+2,"Emp");
+	  state.set(j,"Emp");
 	}
       else
 	{
-	  state.set(2*j+1,"Occ");
-	  state.set(2*j+2,"Occ");
+	  state.set(j,"UpDn");
 	}
     }
   auto psiInit0 = MPS(state);
-  state = InitState(sites);
-
-  //  auto [energy,psi0] = dmrg(H, randomMPS(state), sweeps, {"Quiet=",true, "EnergyErrgoal=", dE});
-  //  printfln("E0 N a m g = %.12f %d %.12f %d %.12f\n", energy, N, a, m, g);
-
-
 
   // Schmidt spectrum at half-cut
   // auto b = N-1;
@@ -99,6 +91,7 @@ int su2(const char *inputfile, Args const& args = Args::global()){
   // Excited states
   std::vector<MPS> states;
   std::vector<double> energies;
+
   for (int j = 0; j < nstates; j++) {
     auto [energy,psi] = dmrg(H, states, randomMPS(state), sweeps, {"Silent=", true, "Weight=", weight, "EnergyErrgoal=", dE});
     states.push_back(psi);
@@ -111,10 +104,10 @@ int su2(const char *inputfile, Args const& args = Args::global()){
   
   for(int k=0; k < 2; k+=1)
     {
-      for(int j=0; j < 2*N; j+=1)
+      for(int j=1; j < N+1; j+=1)
 	{
 	  ampo = AutoMPO(sites);
-	  ampo += 1, "N", j+1;
+	  ampo += 1, "Ntot", j;
 	  auto nj   = toMPO(ampo);
 	  Real occupation = inner(states[k], nj, states[k]);
 	  printf("%.12f, ", occupation);  
