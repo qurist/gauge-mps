@@ -1,0 +1,7 @@
+N	6
+t	5
+m	1
+g	1
+OMP	1
+MKL	1
+BC	O

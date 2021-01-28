@@ -3,17 +3,20 @@
 using namespace itensor;
 
 int su2(const char *inputfile, Args const& args = Args::global()){
+  printfln("");
   auto input = InputGroup(inputfile,"input");
   auto N = input.getInt("N", 30);
   auto a = input.getReal("a", 0.1);
   auto m = input.getReal("m",1);
   auto g = input.getReal("g", 1);
+  auto nstates = input.getInt("nstates", 1);
+  auto weight  = input.getReal("weight", 100);
 
   Real t1 = 1;
   Real t2 = 1;
   Real t3 = 1;
 
-  auto sites = Fermion(2*N, {"ConserveQNs=",false});
+  auto sites = Fermion(2*N, {"ConserveQNs=",True});
   auto ampo = AutoMPO(sites);
 
   // 1d lattice with 2N sites (i.e. N staggered sites, N/2 physical sites), labeled 1,...,2N.
@@ -96,38 +99,28 @@ int su2(const char *inputfile, Args const& args = Args::global()){
   // Excited states
   std::vector<MPS> states;
   std::vector<double> energies;
-  int nstates = 2;
   for (int j = 0; j < nstates; j++) {
-    auto [energy,psi] = dmrg(H, states, randomMPS(state), sweeps, {"Quiet=", true, "Weight=", 100.0, "EnergyErrgoal=", dE});
+    auto [energy,psi] = dmrg(H, states, randomMPS(state), sweeps, {"Silent=", true, "Weight=", weight, "EnergyErrgoal=", dE});
     states.push_back(psi);
     energies.push_back(energy);
   }
-  printfln("E1 N a m g t= %.12f %d %.12f %d %.12f\n", energies[0], N, a, m, g);
-  printfln("E1 N a m g t= %.12f %d %.12f %d %.12f\n", energies[1], N, a, m, g);
-  //  printfln("E1 N a m g = %.12f %d %.12f %d %.12f\n", energies[2], N, a, m, g);
-  //  printfln("E1 N a m g = %.12f %d %.12f %d %.12f\n", energies[3], N, a, m, g);
-  //  printfln("E1 N a m g = %.12f %d %.12f %d %.12f\n", energies[4], N, a, m, g);
-  // printfln("E1 N a m g = %.12f %d %.12f %d %.12f\n", energies[5], N, a, m, g);
-
-  for(int j=0; j < 2*N; j+=1)
+  
+  for (int j = 0; j < nstates; j++) {
+    printfln("E%d= %d %.12f\n", j, energies[j]);
+  }
+  
+  for(int k=0; k < 2; k+=1)
     {
-      ampo = AutoMPO(sites);
-      ampo += 1, "N", j+1;
-      auto nj   = toMPO(ampo);
-      Real occupation = inner(states[0], nj, states[0]);
-      printfln("%d %.12f\n",j, occupation);  
+      for(int j=0; j < 2*N; j+=1)
+	{
+	  ampo = AutoMPO(sites);
+	  ampo += 1, "N", j+1;
+	  auto nj   = toMPO(ampo);
+	  Real occupation = inner(states[k], nj, states[k]);
+	  printf("%.12f, ", occupation);  
+	}
+      printf("\n");
     }
-
-  for(int j=0; j < 2*N; j+=1)
-    {
-      ampo = AutoMPO(sites);
-      ampo += 1, "N", j+1;
-      auto nj   = toMPO(ampo);
-      Real overlap = inner(states[1], states[0]);
-      Real occupation = inner(states[1], nj, states[1]);
-      printfln("%d %.12f %.12f\n",j, occupation, overlap);  
-    }
-
 
   // Time evolution under the Hamiltonian
   // auto T = 0.1;

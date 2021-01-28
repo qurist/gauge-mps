@@ -1,0 +1,2 @@
+parameter sweep command:
+"for x in $(seq 10 10 200); do for N in $(seq 10 10 300); do printf "input\n{\nN=$N\nNE=5\nx=$x\nmu=5\nDmax=200\n}" >> ../data/inputs/input_N$((N))_x$((x))_Emax5_mu5_Dmax200; done; done"
